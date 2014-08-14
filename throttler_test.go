@@ -55,7 +55,8 @@ func TestThrottler(t *testing.T) {
 		t.Errorf("Number of throtte tokens is %d instead of %d. (after loops)", l, max/10)
 	}
 
-	tl.Close()
+	go tl.Close()
+	go tl.MaxConns(5) // should work
 	log.Println("Waiting for the listener to close...")
 	tl.Wait()
 }
