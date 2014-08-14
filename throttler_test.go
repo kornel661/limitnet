@@ -18,6 +18,7 @@ func delay() {
 
 type fataler interface {
 	Fatal(...interface{})
+	Fatalf(string, ...interface{})
 }
 
 func newTL(t fataler) *throttledListener {

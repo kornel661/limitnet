@@ -39,6 +39,10 @@ type ThrottledListener interface {
 	// attain this value].
 	// If n < 0 then the limit is not changed.
 	// Panics if called after the listener is closed.
+	//
+	// NOTE: It's possible (?) that operating system's kernel starts accepting
+	// connections without waiting for the userspace. Anyway, Go will be only able
+	// to accept MaxConns connections.
 	MaxConns(n int) int
 }
 
