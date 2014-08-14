@@ -12,6 +12,10 @@ func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 }
 
+// counter counts no of all accepted connections (all), currently active connections
+// (curr), maximum number of simultaneously active connections (max) and fails the
+// the test if Limit is exceeded.
+// The channel connected records connected connections.
 type counter struct {
 	Limit          int
 	t              fataler
@@ -34,6 +38,12 @@ func (c *counter) Connect() {
 	}
 }
 
+func (c *counter) Disconnect() {
+	c.Lock()
+	defer c.Unlock()
+	c.curr--
+}
+
 func (c *counter) All() int {
 	c.Lock()
 	defer c.Unlock()
@@ -50,12 +60,6 @@ func (c *counter) Curr() int {
 	c.Lock()
 	defer c.Unlock()
 	return c.curr
-}
-
-func (c *counter) Disconnect() {
-	c.Lock()
-	defer c.Unlock()
-	c.curr--
 }
 
 func throttleConn(delay time.Duration, t *testing.T, count *counter) {
@@ -117,6 +121,6 @@ func TestThrottling(t *testing.T) {
 	}
 	t.Logf("Maximum number of concurrent connections: %d, limit: %d", count.Max(), max)
 	if err := tl.Close(); err != errClosing {
-		t.Errorf("Closing the listener twice shoud give %s instead of %s", errClosing, err)
+		t.Errorf("Closing the listener twice should give %s instead of %s", errClosing, err)
 	}
 }

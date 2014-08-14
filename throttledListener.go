@@ -16,17 +16,23 @@ var (
 // token defines type used as tokens in channel communication
 type token struct{}
 
-// throttledListener
+// throttledListener (or rather its pointer) implements ThrottledListener interface.
 type throttledListener struct {
 	net.Listener            // standard net.Listener to wrap
 	throttle     chan token // connections take tokens from this channel
-	maxThrottle  chan int32 // channel to communicate max number of simulaneously open connections, closing it signals throttler goroutine to stop
+	maxThrottle  chan int32 // channel to communicate max number of simultaneously open connections, closing it signals throttler goroutine to stop
 	closed       chan token // this channel is closed when listener gets closed
 	finished     chan token // this channel is closed when listener is closed and all connections terminated
 }
 
 // ThrottledListener type of net.Listener with dynamically adjusted max number
 // of simultaneous connections. Needs to be closed to avoid leaking memory.
+// Throttling incoming connections is important for any production server as without
+// it it's hard to fight off DOS attacks.
+//
+// Additionally it provides Wait method which waits till all connections accepted
+// from the listener are closed. Wait makes it very easy to implement graceful
+// shutdown of a server for example.
 type ThrottledListener interface {
 	// Listener - a standard net.Listener functionality.
 	net.Listener
@@ -38,7 +44,8 @@ type ThrottledListener interface {
 	// necessarily equal (last limit)-(no of active connections) but should quickly
 	// attain this value].
 	// If n < 0 then the limit is not changed.
-	// Panics if called after the listener is closed.
+	// The behaviour is undefined if called after the listener is closed (may panic,
+	// hang, be a noop, etc.).
 	//
 	// NOTE: It's possible (?) that operating system's kernel starts accepting
 	// connections without waiting for the userspace. Anyway, Go will be only able
@@ -85,9 +92,10 @@ func (tl *throttledListener) Accept() (net.Conn, error) {
 	return &throttledConn{Conn: c, replaceToken: tl.replaceToken}, nil
 }
 
+// Close closes the listener. Close the listener after use to avoid memory leaks.
 func (tl *throttledListener) Close() error {
 	_, ok := <-tl.closed
-	if ok { // the one who'd taken a token closes the channnel
+	if ok { // the one who'd taken a token closes the channel
 		close(tl.closed)
 	} else { // listener's been closed already
 		return errClosing
@@ -96,11 +104,15 @@ func (tl *throttledListener) Close() error {
 	return tl.Listener.Close()
 }
 
+// Wait waits for the listener to be closed and all connections terminated and
+// then returns.
 func (tl *throttledListener) Wait() {
 	<-tl.finished
 	return
 }
 
+// MaxConns sets a new limit of simultaneously active connections (if n>=0) and
+// returns how many more connections can be accepted at the moment.
 func (tl *throttledListener) MaxConns(n int) (free int) {
 	free = len(tl.throttle)
 	if n < 0 {
@@ -125,13 +137,13 @@ func (tl *throttledListener) replaceToken() {
 }
 
 // throttler is run in a separate goroutine. It listens on tl.maxThrottle
-// and adds or removes tokens from the tl.throttle channnel.
-// Closed tl.stop channel signals the throttler goroutine to collect all tokens
+// and adds or removes tokens from the tl.throttle channel ('jar').
+// Closed tl.maxThrottle channel signals the throttler goroutine to collect all tokens
 // (i.e. wait for all connections) end exit.
 func (tl *throttledListener) throttler() {
 	var (
-		instMax   int32  // instantenous max == number of throttling tokens at large
-		targetMax int32  // target instantenous max, we want to make instMax = targetMax
+		instMax   int32  // instantaneous max == number of throttling tokens at large
+		targetMax int32  // target instantaneous max, we want to make instMax = targetMax
 		ok        = true // if it's OK to continue or should we stop
 	)
 	// removes a token from the jar
@@ -156,7 +168,7 @@ func (tl *throttledListener) throttler() {
 		case targetMax, ok = <-tl.maxThrottle:
 		}
 	}
-	// loop until signaled to exit
+	// loop until signalled to exit
 	for ok {
 		switch {
 		case instMax < targetMax:
