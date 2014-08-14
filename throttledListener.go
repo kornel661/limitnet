@@ -44,8 +44,7 @@ type ThrottledListener interface {
 	// necessarily equal (last limit)-(no of active connections) but should quickly
 	// attain this value].
 	// If n < 0 then the limit is not changed.
-	// The behaviour is undefined if called after the listener is closed (may panic,
-	// hang, be a noop, etc.).
+	// Can be called after closing the listener.
 	//
 	// NOTE: It's possible (?) that operating system's kernel starts accepting
 	// connections without waiting for the userspace. Anyway, Go will be only able
@@ -94,13 +93,13 @@ func (tl *throttledListener) Accept() (net.Conn, error) {
 
 // Close closes the listener. Close the listener after use to avoid memory leaks.
 func (tl *throttledListener) Close() error {
-	_, ok := <-tl.closed
-	if ok { // the one who'd taken a token closes the channel
-		close(tl.closed)
+	_, ok := <-tl.closed // try to take mutex
+	if ok {              // the one who'd taken a token closes the channel
+		close(tl.closed)      // signal others that we're closing
+		close(tl.maxThrottle) // signal throttler goroutine to stop
 	} else { // listener's been closed already
 		return errClosing
 	}
-	close(tl.maxThrottle) // signal throttler goroutine to stop
 	return tl.Listener.Close()
 }
 
@@ -114,7 +113,13 @@ func (tl *throttledListener) Wait() {
 // MaxConns sets a new limit of simultaneously active connections (if n>=0) and
 // returns how many more connections can be accepted at the moment.
 func (tl *throttledListener) MaxConns(n int) (free int) {
+	_, ok := <-tl.closed // lock mutex
 	free = len(tl.throttle)
+	if !ok { // we're closing
+		return
+	}
+	// unlock mutex:
+	defer func() { tl.closed <- token{} }()
 	if n < 0 {
 		return
 	}
