@@ -30,7 +30,7 @@ type throttledListener struct {
 type ThrottledListener interface {
 	// Listener - a standard net.Listener functionality.
 	net.Listener
-	// Wait returns only when the listener is closed all connections terminated.
+	// Wait returns only when the listener is closed and all connections terminated.
 	Wait()
 	// MaxConns sets a new maximum limit for simultaneous connections (which can't
 	// be greater than math.MaxInt32) and returns the number of free slots for new
@@ -46,7 +46,7 @@ type ThrottledListener interface {
 	MaxConns(n int) int
 }
 
-// NewThrottledListener returns initialized instance of ThrottledListener.
+// NewThrottledListener returns initialized instance of ThrottledListener wrapping l.
 func NewThrottledListener(l net.Listener) ThrottledListener {
 	tl := throttledListener{Listener: l}
 
