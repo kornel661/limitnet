@@ -1,9 +1,5 @@
 /*
-Package limitnet provides some network primitives, most notably throttled listener, needed by my nserv (https://github.com/kornel661/nserv) package.
-
-ThrottledListener implements
-* throttling the number of active connections (preventing depletion of server's resources and DOS attacks) and
-* graceful shutdown through the Wait method.
+Package limitnet provides some network primitives, most notably throttled listener, needed by my nserv (https://gopkg.in/kornel661/nserv.v0) package.
 
 Usage:
 
