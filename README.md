@@ -1,4 +1,4 @@
-limitnet [![GoDoc](https://godoc.org/gopkg.in/kornel661/limitnet.v0?status.svg)](https://godoc.org/gopkg.in/kornel661/limitnet.v0)
+limitnet [![GoDoc](https://godoc.org/gopkg.in/kornel661/limitnet.v0?status.svg)](https://godoc.org/gopkg.in/kornel661/limitnet.v0) [![GoWalker](https://gowalker.org/api/v1/badge)](https://gowalker.org/gopkg.in/kornel661/limitnet.v0) [![GoCover](http://gocover.io/_badge/gopkg.in/kornel661/limitnet.v0)](http://gocover.io/gopkg.in/kornel661/limitnet.v0)
 ========
 
 Package limitnet provides some network primitives, most notably throttled listener, needed by my [nserv](https://github.com/kornel661/nserv) package.
