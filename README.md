@@ -12,11 +12,11 @@ Usage
 =====
 
 ```go
-import "gopkg.in/kornel661/limitnet.v0"
+import "gopkg.in/kornel661/limitnet.v1"
 ```
 or
 ```
-go get gopkg.in/kornel661/limitnet.v0
+go get gopkg.in/kornel661/limitnet.v1
 ```
 
 
