@@ -1,5 +1,6 @@
 /*
-Package limitnet provides some network primitives, most notably throttled listener, needed by my nserv (https://gopkg.in/kornel661/nserv.v0) package.
+Package limitnet provides some network primitives, most notably throttled
+listener, needed by my nserv (https://gopkg.in/kornel661/nserv.v0) package.
 
 Usage:
 
@@ -8,6 +9,8 @@ Usage:
 or
 
 	go get gopkg.in/kornel661/limitnet.v0
+
+Replace v0 by the version you need.
 
 */
 package limitnet
