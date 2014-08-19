@@ -24,7 +24,9 @@ Replace v0 by the version you need, see [package import site](https://gopkg.in/k
 Versions
 ========
 
-* Developement version (v0)
+* * Bleeding-edge development version (github.com/kornel661/limitnet)
+ [![GoDoc](https://godoc.org/github.com/kornel661/limitnet?status.svg)](https://godoc.org/github.com/kornel661/limitnet)  [![GoWalker](https://gowalker.org/api/v1/badge)](https://gowalker.org/github.com/kornel661/limitnet)
+* Development version (v0)
   [![GoDoc](https://godoc.org/gopkg.in/kornel661/limitnet.v0?status.svg)](https://godoc.org/gopkg.in/kornel661/limitnet.v0) [![GoWalker](https://gowalker.org/api/v1/badge)](https://gowalker.org/gopkg.in/kornel661/limitnet.v0) [![GoCover](http://gocover.io/_badge/gopkg.in/kornel661/limitnet.v0)](http://gocover.io/gopkg.in/kornel661/limitnet.v0)
 * Initial version with stable API (v1)
   [![GoDoc](https://godoc.org/gopkg.in/kornel661/limitnet.v1?status.svg)](https://godoc.org/gopkg.in/kornel661/limitnet.v1) [![GoWalker](https://gowalker.org/api/v1/badge)](https://gowalker.org/gopkg.in/kornel661/limitnet.v1) [![GoCover](http://gocover.io/_badge/gopkg.in/kornel661/limitnet.v1)](http://gocover.io/gopkg.in/kornel661/limitnet.v1)
