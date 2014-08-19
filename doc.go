@@ -10,7 +10,8 @@ or
 
 	go get gopkg.in/kornel661/limitnet.v0
 
-Replace v0 by the version you need.
+Replace v0 by the version you need (v0 is a development version, with no API
+stability guaratees).
 
 */
 package limitnet
