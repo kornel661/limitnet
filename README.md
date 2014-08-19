@@ -20,6 +20,8 @@ go get gopkg.in/kornel661/limitnet.v0
 ```
 Replace v0 by the version you need, see [package import site](https://gopkg.in/kornel661/limitnet.v0) and [gopkg.in](https://labix.org/gopkg.in) for import path convention.
 
+For up-to-date changelog and features list see [README](https://github.com/kornel661/limitnet/blob/master/README.md).
+
 
 Versions
 ========

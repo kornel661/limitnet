@@ -13,5 +13,7 @@ or
 Replace v0 by the version you need (v0 is a development version, with no API
 stability guaratees).
 
+For up-to-date changelog and features list see [README]
+(https://github.com/kornel661/limitnet/blob/master/README.md).
 */
 package limitnet
