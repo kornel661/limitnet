@@ -7,6 +7,8 @@ ThrottledListener implements
 * throttling the number of active connections (preventing depletion of server's resources and DOS attacks) and
 * graceful shutdown through the Wait method.
 
+For up-to-date changelog and features list see [README](https://github.com/kornel661/limitnet/blob/master/README.md).
+
 
 Usage
 =====

@@ -12,5 +12,7 @@ or
 
 Replace v1 by the version you need.
 
+For up-to-date changelog and features list see [README]
+(https://github.com/kornel661/limitnet/blob/master/README.md).
 */
 package limitnet
