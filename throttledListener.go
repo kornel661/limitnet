@@ -93,7 +93,7 @@ func (tl *throttledListener) Accept() (net.Conn, error) {
 
 // Close closes the listener. Close the listener after use to avoid memory leaks.
 func (tl *throttledListener) Close() error {
-	_, ok := <-tl.closed // try to take mutex
+	_, ok := <-tl.closed // try to 'take mutex'
 	if ok {              // the one who'd taken a token closes the channel
 		close(tl.closed)      // signal others that we're closing
 		close(tl.maxThrottle) // signal throttler goroutine to stop

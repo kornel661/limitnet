@@ -13,7 +13,7 @@ type throttledConn struct {
 }
 
 func (tc *throttledConn) Close() error {
-	err := tc.Conn.Close()
+	err := tc.Conn.Close()      // close the connection first
 	tc.once.Do(tc.replaceToken) // do it only once (even when sb closes a conn multiple times)
 	return err
 }
