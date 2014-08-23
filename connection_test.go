@@ -2,15 +2,10 @@ package limitnet
 
 import (
 	"net"
-	"runtime"
 	"sync"
 	"testing"
 	"time"
 )
-
-func init() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-}
 
 // counter counts no of all accepted connections (all), currently active connections
 // (curr), maximum number of simultaneously active connections (max) and fails the
