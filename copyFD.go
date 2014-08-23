@@ -14,16 +14,16 @@ type Filer interface {
 }
 
 // CopyFD returns a duplicate (dup) of a file descriptor associated with l.
-func CopyFD(l net.Listener) (fd uintptr, err error) {
+func CopyFD(l net.Listener) (fd *os.File, err error) {
 	if list, ok := l.(Filer); ok {
 		var file *os.File
 		if file, err = list.File(); err == nil {
-			return file.Fd(), nil
+			return file, nil
 		}
-		return 0, err
+		return nil, err
 	}
 	if list, ok := l.(*throttledListener); ok {
 		return CopyFD(list.Listener)
 	}
-	return 0, errors.New("Cannot get a dup of fd from the listener.")
+	return nil, errors.New("Cannot get a dup of fd from the listener.")
 }

@@ -2,7 +2,6 @@ package limitnet
 
 import (
 	"net"
-	"syscall"
 	"testing"
 )
 
@@ -16,8 +15,8 @@ func TestCopyFD(t *testing.T) {
 	if fd, err := CopyFD(l); err != nil {
 		t.Fatal(err)
 	} else {
-		t.Logf("Got FD: %d\n", fd)
-		if err := syscall.Close(int(fd)); err != nil {
+		t.Logf("Got FD: %v\n", fd)
+		if err := fd.Close(); err != nil {
 			t.Error(err)
 		}
 	}
