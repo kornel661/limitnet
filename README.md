@@ -7,6 +7,13 @@ ThrottledListener implements
 * throttling the number of active connections (preventing depletion of server's resources and DOS attacks) and
 * graceful shutdown through the Wait method.
 
+Package features, version v1:
+* throttled listener with graceful shutdown
+version v0 additionally boasts:
+* helper functions for writing a server with zero-downtime restarts (by
+  passing an open fd to a child process, see nserv package for examples)
+
+
 For up-to-date changelog and features list see [README](https://github.com/kornel661/limitnet/blob/master/README.md).
 
 
@@ -36,6 +43,7 @@ Versions
 Changelog
 =========
 
+* 2014.08.27 (version v0): zero-downtime restarts - alpha quality code
 * 2014.08.18 (version v1): Created version v1 - its API should be stabe, though
   it isn't well-tested yet.
 * 2014.08.16 (version v0): Testing & bug hunting season opened.

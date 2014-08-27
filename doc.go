@@ -3,9 +3,9 @@ Package limitnet provides some network primitives, most notably throttled
 listener, needed by my nserv (https://gopkg.in/kornel661/nserv.v0) package.
 
 Features:
-* throttled listener
-* helper functions for writing a zero-downtime server (by passing an open fd to
-  a child process, see nserv package for examples)
+	* throttled listener with graceful shutdown
+	* helper functions for writing a server with zero-downtime restarts (by
+	  passing an open fd to a child process, see nserv package for examples)
 
 
 Usage:
