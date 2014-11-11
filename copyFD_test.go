@@ -26,7 +26,8 @@ func TestCopyFD(t *testing.T) {
 
 func TestRetrieveListeners(t *testing.T) {
 	// we don't expect to inherit any listeners
-	*fdsFlag = ""
+	InitializeZeroDowntime()
+	*FDsFlag = ""
 	ls, err := RetrieveListeners()
 	if err == nil {
 		t.Error("The flag parsed successfully.")
@@ -38,7 +39,7 @@ func TestRetrieveListeners(t *testing.T) {
 		t.Error("Some listeners inherited.")
 	}
 	// check if inheriting 0 listeners works:
-	*fdsFlag = "3-3"
+	*FDsFlag = "3-3"
 	if !CanRetrieveListeners() {
 		t.Error("Can't retrieve listeners.")
 	}
@@ -66,7 +67,7 @@ func TestRetrieveOneListener(t *testing.T) {
 		t.Error(err)
 	}
 
-	*fdsFlag = fmt.Sprintf("%d-%d", fd.Fd(), fd.Fd()+1)
+	*FDsFlag = fmt.Sprintf("%d-%d", fd.Fd(), fd.Fd()+1)
 	if !CanRetrieveListeners() {
 		t.Error("Can't retrieve listeners.")
 	}

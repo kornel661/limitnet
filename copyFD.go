@@ -18,8 +18,16 @@ var (
 	// listeners.
 	FDsFlagName = "netlimit.FDs"
 
-	fdsFlag = flag.String(FDsFlagName, "", "internal limitnet flag")
+	// FDsFlag is set by InitializeZeroDowntime().
+	FDsFlag = new(string)
 )
+
+// InitializeZeroDowntime parses commandline flags used by this package for
+// supporting zero-downtime restarts. You are welcome to change FDsFlagName
+// _before_ invoking this functions. See also: FDsFlag.
+func InitializeZeroDowntime() {
+	FDsFlag = flag.String(FDsFlagName, "", "internal limitnet flag")
+}
 
 // Filer interface is satisfied by those listeners that allow getting duplicates
 // of their file descriptors. Both *net.TCPListener and *net.UnixListener satisfy
@@ -29,16 +37,17 @@ type Filer interface {
 }
 
 // CopyFD returns a duplicate (dup) of a file descriptor associated with l.
+// l needs to satisfy Filer interface or be of type *limitnet.throttledListener.
 func CopyFD(l net.Listener) (fd *os.File, err error) {
-	if list, ok := l.(Filer); ok {
+	if listn, ok := l.(Filer); ok {
 		var file *os.File
-		if file, err = list.File(); err == nil {
+		if file, err = listn.File(); err == nil {
 			return file, nil
 		}
 		return nil, err
 	}
-	if list, ok := l.(*throttledListener); ok {
-		return CopyFD(list.Listener)
+	if listn, ok := l.(*throttledListener); ok {
+		return CopyFD(listn.Listener)
 	}
 	return nil, errors.New("Cannot get a dup of fd from the listener.")
 }
@@ -81,10 +90,10 @@ func PrepareCmd(name string, args []string, extraFiles []*os.File, ls ...net.Lis
 }
 
 func readFDsFlag() (a, b uintptr, err error) {
-	if *fdsFlag == "" {
+	if *FDsFlag == "" {
 		return 0, 0, errors.New("Executing without inherited listeners.")
 	}
-	if n, err := fmt.Sscanf(*fdsFlag, "%d-%d", &a, &b); err != nil || n != 2 {
+	if n, err := fmt.Sscanf(*FDsFlag, "%d-%d", &a, &b); err != nil || n != 2 {
 		if err == nil {
 			err = errors.New("Error parsing netlimitFDs flag.")
 		} else {
