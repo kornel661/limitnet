@@ -21,6 +21,7 @@ type fataler interface {
 	Fatalf(string, ...interface{})
 }
 
+// newTL creates a new throttledListener, can be invoked from the main goroutine only.
 func newTL(t fataler) *throttledListener {
 	if l, err := net.Listen("tcp", addr); err != nil {
 		t.Fatal(err)
@@ -37,14 +38,14 @@ func TestThrottler(t *testing.T) {
 	tl.MaxConns(max / 2)
 	delay()
 	if l := tl.MaxConns(-1); l != max/2 {
-		t.Errorf("Number of tokens=%d instead of %d. (max/2)", l, max/2)
+		t.Errorf("Error. Number of tokens=%d instead of %d. (max/2)", l, max/2)
 	}
 
 	for i := 1; i <= 10; i++ {
 		tl.MaxConns(max / i)
 	}
 	for i := 10; i >= 1; i-- {
-		tl.MaxConns(max / i)
+		go tl.MaxConns(max / i)
 	}
 	for i := 1; i <= 10; i++ {
 		tl.MaxConns(max / i)
@@ -52,7 +53,7 @@ func TestThrottler(t *testing.T) {
 	}
 	delay()
 	if l := tl.MaxConns(-1); l != max/10 {
-		t.Errorf("Number of throtte tokens is %d instead of %d. (after loops)", l, max/10)
+		t.Errorf("Error. Number of throtte tokens is %d instead of %d. (after loops)", l, max/10)
 	}
 
 	go tl.Close()

@@ -82,7 +82,7 @@ func PrepareCmd(name string, args []string, extraFiles []*os.File, ls ...net.Lis
 
 func readFDsFlag() (a, b uintptr, err error) {
 	if *fdsFlag == "" {
-		return 0, 0, errors.New("Program run without inheriting listeners.")
+		return 0, 0, errors.New("Executing without inherited listeners.")
 	}
 	if n, err := fmt.Sscanf(*fdsFlag, "%d-%d", &a, &b); err != nil || n != 2 {
 		if err == nil {
@@ -122,6 +122,11 @@ func RetrieveListeners() (ls []net.Listener, err error) {
 		ls[i], err = net.FileListener(file)
 		file.Close()
 		if err != nil {
+			// close created listeners
+			for j := 0; j < i; j++ {
+				ls[j].Close()
+			}
+			// return an error
 			return nil, err
 		}
 		fd++

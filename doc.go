@@ -22,4 +22,4 @@ stability guaratees).
 For up-to-date changelog and features list see [README]
 (https://github.com/kornel661/limitnet/blob/master/README.md).
 */
-package limitnet
+package limitnet // import "gopkg.in/kornel661/limitnet.v0"

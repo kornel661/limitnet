@@ -70,9 +70,8 @@ func NewThrottledListener(l net.Listener) ThrottledListener {
 
 // Accept waits for and returns the next connection to the listener.
 func (tl *throttledListener) Accept() (net.Conn, error) {
-	if !tl.takeToken() {
-		// accepted closed listener, return appropriate error
-		var netw = ""
+	if !tl.takeToken() { // accepted closed listener, return appropriate error
+		var netw = "" // network type
 		if _, ok := (tl.Listener).(*net.TCPListener); ok {
 			netw = "tcp"
 		}
@@ -94,26 +93,28 @@ func (tl *throttledListener) Accept() (net.Conn, error) {
 // Close closes the listener. Close the listener after use to avoid memory leaks.
 func (tl *throttledListener) Close() error {
 	_, ok := <-tl.closed // try to 'take mutex'
-	if ok {              // the one who'd taken a token closes the channel
+	var err error
+	if ok { // the one who'd taken a token closes the channel
+		err = tl.Listener.Close()
 		close(tl.closed)      // signal others that we're closing
 		close(tl.maxThrottle) // signal throttler goroutine to stop
 	} else { // listener's been closed already
 		return errClosing
 	}
-	return tl.Listener.Close()
+	return err
 }
 
 // Wait waits for the listener to be closed and all connections terminated and
 // then returns.
 func (tl *throttledListener) Wait() {
-	<-tl.finished
+	<-tl.finished // waits for tl.finished to be closed
 	return
 }
 
 // MaxConns sets a new limit of simultaneously active connections (if n>=0) and
 // returns how many more connections can be accepted at the moment.
 func (tl *throttledListener) MaxConns(n int) (free int) {
-	_, ok := <-tl.closed // lock mutex
+	_, ok := <-tl.closed // lock mutex (so that tl isn't closed in the meantime)
 	free = len(tl.throttle)
 	if !ok { // we're closing
 		return
