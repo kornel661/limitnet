@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	// FDsFlagName is the name of the commandline flag used to pass information
+	// FDsFlagName is the name of the command-line flag used to pass information
 	// about fds to the child process. The flag has the form:
 	//     -flag=n-m
 	// what means that file descriptors n, n+1, ..., m-1 are the 'inherited'
@@ -22,7 +22,7 @@ var (
 	FDsFlag = new(string)
 )
 
-// InitializeZeroDowntime sets up the commandline flags used by this package for
+// InitializeZeroDowntime sets up the command-line flags used by this package for
 // supporting zero-downtime restarts. You are welcome to change FDsFlagName
 // _before_ invoking this functions. See also: FDsFlag.
 // You need to execute flag.Parse() after InitializeZeroDowntime() for it to work.
