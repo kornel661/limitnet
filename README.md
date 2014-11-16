@@ -43,6 +43,7 @@ Versions
 Changelog
 =========
 
+* 2014.11.11 (version v0): fixed some tests
 * 2014.08.27 (version v0): zero-downtime restarts - alpha quality code
 * 2014.08.18 (version v1): Created version v1 - its API should be stabe, though
   it isn't well-tested yet.

@@ -97,7 +97,7 @@ func TestPrepareCmd(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("%#v", cmd)
+	//t.Logf("%#v", cmd)
 
 	err = l.Close()
 	if err != nil {

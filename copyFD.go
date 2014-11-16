@@ -22,9 +22,10 @@ var (
 	FDsFlag = new(string)
 )
 
-// InitializeZeroDowntime parses commandline flags used by this package for
+// InitializeZeroDowntime sets up the commandline flags used by this package for
 // supporting zero-downtime restarts. You are welcome to change FDsFlagName
 // _before_ invoking this functions. See also: FDsFlag.
+// You need to execute flag.Parse() after InitializeZeroDowntime() for it to work.
 func InitializeZeroDowntime() {
 	FDsFlag = flag.String(FDsFlagName, "", "internal limitnet flag")
 }
@@ -82,9 +83,9 @@ func PrepareCmd(name string, args []string, extraFiles []*os.File, ls ...net.Lis
 
 	args = append([]string{flag}, args...)
 	cmd = exec.Command(name, args...)
-	//cmd.Stdin = os.Stdin
-	//cmd.Stdout = os.Stdout
-	//cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 	cmd.ExtraFiles = extraFiles
 	return cmd, nil
 }
