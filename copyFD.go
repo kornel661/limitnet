@@ -38,7 +38,8 @@ type Filer interface {
 }
 
 // CopyFD returns a duplicate (dup) of a file descriptor associated with l.
-// l needs to satisfy Filer interface or be of type *limitnet.throttledListener.
+// l needs to satisfy Filer interface or be of type *limitnet.throttledListener
+// composed with a listener satisfying Filer interface.
 func CopyFD(l net.Listener) (fd *os.File, err error) {
 	if listn, ok := l.(Filer); ok {
 		var file *os.File
