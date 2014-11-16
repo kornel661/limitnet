@@ -9,6 +9,7 @@ ThrottledListener implements
 
 Package features, version v1:
 * throttled listener with graceful shutdown
+
 version v0 additionally boasts:
 * helper functions for writing a server with zero-downtime restarts (by
   passing an open fd to a child process, see nserv package for examples)
