@@ -20,6 +20,9 @@ var (
 
 	// FDsFlag is set by InitializeZeroDowntime().
 	FDsFlag = new(string)
+
+	//// system-specific options for executing commands
+	//sysProcAttr syscall.SysProcAttr
 )
 
 // InitializeZeroDowntime sets up the command-line flags used by this package for
@@ -82,8 +85,12 @@ func PrepareCmd(name string, args []string, extraFiles []*os.File, ls ...net.Lis
 	flag := fmt.Sprintf("-%s=%d-%d", FDsFlagName, start, start+len(files))
 	extraFiles = append(extraFiles, files...)
 
+	//sysProcAttr.Setsid = true
+	//sysProcAttr.Setctty = true
+
 	args = append([]string{flag}, args...)
 	cmd = exec.Command(name, args...)
+	//cmd.SysProcAttr = &sysProcAttr
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
